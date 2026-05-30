@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>늘해 — 캐릭터 아카이브</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;--white:#ffffff;--surface:#f2f0ed;--surface2:#eceae6;
+  --border:#e2dfd9;--border2:#ccc9c2;
+  --text:#1a1916;--muted:#7a7870;--muted2:#a09e96;
+  --accent:#6b4fd8;--accent-bg:#f0ecff;--accent-border:#d4c9f7;
+  --teal:#1a8a72;--teal-bg:#e8f7f3;
+  --pink:#c24070;--pink-bg:#fce8ef;
+  --font:'Noto Sans KR',sans-serif;--deco:'Gowun Batang',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.7;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:100}
+.logo{font-family:var(--deco);font-size:18px;color:var(--accent)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.breadcrumb a{color:var(--muted);transition:color 0.15s}
+.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb span{color:var(--muted2)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--white);color:var(--muted);font-size:13px;font-family:var(--font);cursor:pointer;transition:all 0.15s}
+.btn:hover{background:var(--surface);color:var(--text);border-color:var(--border2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{opacity:0.9}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:200px 1fr 180px;max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* SIDEBAR LEFT */
+.sidebar-left{padding:20px 14px 20px 0;border-right:1px solid var(--border);position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto}
+.sidebar-label{font-size:11px;color:var(--muted2);font-weight:500;letter-spacing:0.07em;margin-bottom:8px;padding:0 6px;text-transform:uppercase}
+.sidebar-section{margin-bottom:20px}
+.folder-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.12s;margin-bottom:1px}
+.folder-item:hover{background:var(--surface);color:var(--text)}
+.folder-item.active{background:var(--accent-bg);color:var(--accent)}
+.char-list-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.12s;margin-bottom:1px}
+.char-list-item:hover{background:var(--surface);color:var(--text)}
+.char-list-item.active{color:var(--accent);font-weight:500}
+.char-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.char-dot.active{background:var(--accent)}
+
+/* MAIN */
+.main{padding:24px 28px;min-width:0}
+
+/* COVER */
+.cover{width:100%;height:160px;border-radius:10px;background:linear-gradient(135deg,#e8e2f8 0%,#d5cbf0 50%,#c9bfec 100%);display:flex;align-items:center;justify-content:center;margin-bottom:-44px;position:relative;overflow:hidden}
+.cover-glyph{font-family:var(--deco);font-size:64px;color:rgba(107,79,216,0.18);user-select:none;position:relative;z-index:1}
+
+/* PROFILE */
+.char-profile{display:flex;align-items:flex-end;gap:14px;margin-bottom:20px}
+.char-avatar{width:80px;height:80px;border-radius:10px;background:linear-gradient(135deg,#ede8fc,#d8d0f5);border:3px solid var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--deco);font-size:28px;color:var(--accent);flex-shrink:0;position:relative;z-index:1}
+.char-header{flex:1;padding-bottom:2px}
+.char-name{font-family:var(--deco);font-size:26px;font-weight:700;color:var(--text);margin-bottom:3px}
+.char-sub{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.visibility-badge{background:var(--teal-bg);color:var(--teal);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag-badge{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:2px 9px;border-radius:4px;font-size:12px;cursor:pointer;transition:all 0.12s}
+.tag-badge:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0 14px;color:var(--muted2);font-size:12px;font-weight:500;letter-spacing:0.06em}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* INFO TABLE */
+.info-table{width:100%;border-collapse:collapse;font-size:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.info-table tr{border-bottom:1px solid var(--border)}
+.info-table tr:last-child{border-bottom:none}
+.info-table th{width:100px;text-align:left;padding:9px 14px;color:var(--muted);font-weight:400;background:var(--surface);font-size:13px;vertical-align:top}
+.info-table td{padding:9px 14px;color:var(--text);font-size:14px;vertical-align:top}
+
+/* PROSE */
+.prose{font-size:14px;color:#3a3830;line-height:1.85}
+.prose p{margin-bottom:8px}
+
+/* BLOCKQUOTE */
+.blockquote{border-left:3px solid var(--accent-border);padding:10px 16px;background:var(--accent-bg);border-radius:0 6px 6px 0;font-style:italic;color:var(--accent);font-size:14px;margin:10px 0 14px;line-height:1.7}
+
+/* COLLAPSE */
+.collapse{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px}
+.collapse-header{padding:9px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--text);background:var(--white);user-select:none;transition:background 0.12s}
+.collapse-header:hover{background:var(--surface)}
+.collapse-arrow{transition:transform 0.2s;font-size:10px;color:var(--muted2)}
+.collapse-body{padding:12px 14px;font-size:14px;color:#3a3830;line-height:1.85;border-top:1px solid var(--border);background:var(--white);display:none}
+.collapse.open .collapse-arrow{transform:rotate(180deg)}
+.collapse.open .collapse-body{display:block}
+
+/* RELATIONS */
+.relations{display:flex;flex-wrap:wrap;gap:8px}
+.relation-card{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;transition:all 0.12s}
+.relation-card:hover{border-color:var(--accent-border);background:var(--accent-bg)}
+.relation-avatar{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--deco);font-size:15px;flex-shrink:0}
+.ra1{background:var(--teal-bg);color:var(--teal)}
+.ra2{background:var(--pink-bg);color:var(--pink)}
+.ra3{background:#e8f0fb;color:#2d5faa}
+.relation-info{font-size:13px}
+.relation-name{color:var(--text);font-weight:500}
+.relation-type{color:var(--muted);font-size:11px;margin-top:1px}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gallery-item{aspect-ratio:3/4;border-radius:8px;overflow:hidden;cursor:pointer;transition:opacity 0.2s;border:1px solid var(--border)}
+.gallery-item:hover{opacity:0.85}
+.gi1{background:linear-gradient(135deg,#e8e2f8,#d5cbf0)}
+.gi2{background:linear-gradient(135deg,#e8f7f3,#c8eee5)}
+.gi3{background:linear-gradient(135deg,#fce8ef,#f5c8d8)}
+.gallery-placeholder{display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--deco);font-size:28px;opacity:0.3;color:var(--text)}
+
+/* SIDEBAR RIGHT */
+.sidebar-right{padding:20px 0 20px 14px;border-left:1px solid var(--border);position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto}
+.side-label{font-size:11px;color:var(--muted2);font-weight:500;letter-spacing:0.07em;margin-bottom:10px;text-transform:uppercase}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.stat-row:last-child{border-bottom:none}
+.stat-val{font-weight:500;color:var(--text)}
+.action-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:7px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--muted);font-size:13px;font-family:var(--font);cursor:pointer;transition:all 0.12s;margin-bottom:5px}
+.action-btn:hover{background:var(--surface);color:var(--text)}
+.action-btn.liked{background:var(--pink-bg);border-color:#f5c8d8;color:var(--pink)}
+.toc-item{font-size:12px;color:var(--muted);padding:3px 0 3px 8px;border-left:2px solid transparent;cursor:pointer;transition:all 0.12s;display:block;margin-bottom:2px}
+.toc-item:hover{color:var(--accent)}
+.toc-item.active{color:var(--accent);border-left-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="logo">아카이브</span>
+  <div class="breadcrumb">
+    <a href="#">량량</a>
+    <span>›</span>
+    <a href="#">우리 세계관</a>
+    <span>›</span>
+    <span style="color:var(--text)">늘해</span>
+  </div>
+  <div class="nav-actions">
+    <button class="btn">공유</button>
+    <button class="btn primary">편집</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <aside class="sidebar-left">
+    <div class="sidebar-section">
+      <div class="sidebar-label">폴더</div>
+      <div class="folder-item active">📁 우리 세계관</div>
+      <div class="folder-item">📁 포켓몬</div>
+      <div class="folder-item">📁 TRPG</div>
+      <div class="folder-item">📁 미완성</div>
+      <div class="folder-item">📁 커미션</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">우리 세계관</div>
+      <div class="char-list-item active"><div class="char-dot active"></div>늘해</div>
+      <div class="char-list-item"><div class="char-dot"></div>해온</div>
+      <div class="char-list-item"><div class="char-dot"></div>청운</div>
+      <div class="char-list-item"><div class="char-dot"></div>백연</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="cover"><span class="cover-glyph">鬼</span></div>
+    <div class="char-profile">
+      <div class="char-avatar">鬼</div>
+      <div class="char-header">
+        <div class="char-name">늘해</div>
+        <div class="char-sub">
+          <span>by 량량</span>
+          <span class="visibility-badge">전체 공개</span>
+        </div>
+        <div class="tags-row">
+          <span class="tag-badge">#도깨비</span>
+          <span class="tag-badge">#동양풍</span>
+          <span class="tag-badge">#중성적</span>
+          <span class="tag-badge">#인외</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider">기본 정보</div>
+    <table class="info-table">
+      <tr><th>이름</th><td>늘해</td></tr>
+      <tr><th>종족</th><td>도깨비</td></tr>
+      <tr><th>나이</th><td>알 수 없음 (추정 수백 년)</td></tr>
+      <tr><th>키</th><td>181cm</td></tr>
+      <tr><th>세계관</th><td>우리 세계관</td></tr>
+    </table>
+
+    <div class="divider">외형</div>
+    <div class="prose">
+      <p>은백색 머리카락과 옅은 회청색 눈동자를 지녔다. 피부는 인간보다 약간 차갑고 창백한 편이며, 귀 끝이 살짝 뾰족하다.</p>
+      <p>평소에는 옅은 회색 도포를 걸치고 다니며, 도깨비불이 주변을 부유한다. 감정이 격해지면 눈동자가 보랏빛으로 변한다.</p>
+    </div>
+
+    <div class="divider">성격</div>
+    <div class="blockquote">"오래 살다 보면 무뎌지는 법이지. 그래도 재밌는 건 재밌어."</div>
+    <div class="prose">
+      <p>겉으로는 무뚝뚝하고 말이 없지만, 관심 있는 사람에게는 먼저 다가가는 면이 있다.</p>
+    </div>
+    <div class="collapse open" onclick="this.classList.toggle('open')">
+      <div class="collapse-header">상세 성격 <span class="collapse-arrow">▼</span></div>
+      <div class="collapse-body">수백 년을 살아온 탓에 인간의 수명이 너무 짧게 느껴져 관계 맺기를 꺼리는 경향이 있다. 그러나 해온을 만난 이후 조금씩 달라지고 있다.</div>
+    </div>
+
+    <div class="divider">관계</div>
+    <div class="relations">
+      <div class="relation-card">
+        <div class="relation-avatar ra1">水</div>
+        <div class="relation-info"><div class="relation-name">해온</div><div class="relation-type">가장 오래된 인연 · 친구</div></div>
+      </div>
+      <div class="relation-card">
+        <div class="relation-avatar ra2">花</div>
+        <div class="relation-info"><div class="relation-name">백연</div><div class="relation-type">먼 과거의 관계 · 복잡</div></div>
+      </div>
+      <div class="relation-card">
+        <div class="relation-avatar ra3">龍</div>
+        <div class="relation-info"><div class="relation-name">청운</div><div class="relation-type">라이벌 · 묘한 경쟁심</div></div>
+      </div>
+    </div>
+
+    <div class="divider">스토리</div>
+    <div class="collapse open" onclick="this.classList.toggle('open')">
+      <div class="collapse-header">탄생 배경 <span class="collapse-arrow">▼</span></div>
+      <div class="collapse-body">오래전 마을 어귀 느티나무 아래에서 태어난 도깨비. 당시 마을 사람들이 버린 기억의 조각들이 뭉쳐 형성되었다고 전해진다.</div>
+    </div>
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="collapse-header">현재 <span class="collapse-arrow">▼</span></div>
+      <div class="collapse-body">마을 외곽 낡은 사당에 기거하며, 가끔 인간 세계로 내려온다. 해온과 처음 마주친 뒤 조금씩 세상과의 거리를 좁히는 중이다.</div>
+    </div>
+
+    <div class="divider">갤러리</div>
+    <div class="gallery">
+      <div class="gallery-item gi1"><div class="gallery-placeholder">鬼</div></div>
+      <div class="gallery-item gi2"><div class="gallery-placeholder">水</div></div>
+      <div class="gallery-item gi3"><div class="gallery-placeholder">夜</div></div>
+    </div>
+
+    <div style="height:40px"></div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div style="margin-bottom:18px">
+      <div class="side-label">정보</div>
+      <div class="stat-row"><span style="color:var(--muted);font-size:13px">좋아요</span><span class="stat-val">1,204</span></div>
+      <div class="stat-row"><span style="color:var(--muted);font-size:13px">북마크</span><span class="stat-val">387</span></div>
+      <div class="stat-row"><span style="color:var(--muted);font-size:13px">조회수</span><span class="stat-val">8,921</span></div>
+      <div class="stat-row"><span style="color:var(--muted);font-size:13px">최근 수정</span><span class="stat-val">오늘</span></div>
+    </div>
+    <div style="margin-bottom:18px">
+      <button class="action-btn liked" id="likeBtn" onclick="toggleLike()">♡ 좋아요</button>
+      <button class="action-btn" id="bookmarkBtn" onclick="toggleBookmark()">☆ 북마크</button>
+    </div>
+    <div>
+      <div class="side-label">목차</div>
+      <a class="toc-item active" href="#">기본 정보</a>
+      <a class="toc-item" href="#">외형</a>
+      <a class="toc-item" href="#">성격</a>
+      <a class="toc-item" href="#">관계</a>
+      <a class="toc-item" href="#">스토리</a>
+      <a class="toc-item" href="#">갤러리</a>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+let liked = true, bookmarked = false;
+function toggleLike() {
+  liked = !liked;
+  const btn = document.getElementById('likeBtn');
+  btn.classList.toggle('liked', liked);
+  btn.textContent = liked ? '♡ 좋아요' : '♡ 좋아요';
+}
+function toggleBookmark() {
+  bookmarked = !bookmarked;
+  const btn = document.getElementById('bookmarkBtn');
+  btn.style.background = bookmarked ? '#fff8e8' : '';
+  btn.style.borderColor = bookmarked ? '#f5d98a' : '';
+  btn.style.color = bookmarked ? '#b07d10' : '';
+  btn.textContent = bookmarked ? '★ 저장됨' : '☆ 북마크';
+}
+document.querySelectorAll('.toc-item').forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.toc-item').forEach(x => x.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
